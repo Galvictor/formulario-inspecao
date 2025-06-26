@@ -37,7 +37,7 @@ const FormularioInspecao = () => {
 
         try {
             // Salva os dados
-            await saveDataToIndexedDB(form);
+            await saveDataToIndexedDB({form, foto: previewFoto});
 
             // Gera o PDF
             await gerarPdfInspecao(form, previewFoto);
