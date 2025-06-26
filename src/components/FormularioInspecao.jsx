@@ -33,8 +33,20 @@ const FormularioInspecao = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSucesso(true);
+
+        // Resetar formulário
+        setForm({
+            tag: '',
+            ultima: '',
+            data: '',
+            tipoDano: '',
+            observacoes: '',
+            foto: null
+        });
+        setPreviewFoto(null);
+
+        // Ocultar alerta após 3 segundos
         setTimeout(() => setSucesso(false), 3000);
-        console.log('Dados salvos:', form);
     };
 
     const isVencido = () => {
