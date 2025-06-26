@@ -9,6 +9,7 @@ const FormularioInspecao = () => {
     const [form, setForm] = useState({
         tag: '',
         ultima: '',
+        data: '',
         tipoDano: '',
         observacoes: '',
         foto: null
@@ -79,6 +80,18 @@ const FormularioInspecao = () => {
                         </div>
                     </>
                 )}
+            </FormGroup>
+
+            <FormGroup>
+                <Label for="data">Data da inspeção</Label>
+                <Input
+                    type="date"
+                    name="data"
+                    id="data"
+                    required
+                    value={form.data}
+                    onChange={handleChange}
+                />
             </FormGroup>
 
             <FormGroup>
