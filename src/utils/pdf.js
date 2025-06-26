@@ -16,9 +16,9 @@ export async function gerarPdfInspecao(form, fotoBase64 = null) {
     const logoArrayBuffer = await logoResponse.arrayBuffer();
     const logoImage = await doc.embedPng(logoArrayBuffer);
 
-    // Calcula as dimensões da marca d'água (25% do tamanho da página)
+    // Calcula as dimensões da marca d'água (50% do tamanho da página)
     const pageDims = page.getSize();
-    const logoWidth = pageDims.width * 0.25;
+    const logoWidth = pageDims.width * 0.5;
     const logoScale = logoWidth / logoImage.width;
     const logoHeight = logoImage.height * logoScale;
 
@@ -28,7 +28,7 @@ export async function gerarPdfInspecao(form, fotoBase64 = null) {
         y: (pageDims.height - logoHeight) / 2,
         width: logoWidth,
         height: logoHeight,
-        opacity: 0.1 // Define a transparência (0.1 = 10% opaco)
+        opacity: 0.3 // Define a transparência (0.1 = 10% opaco)
     });
 
     const {width, height} = page.getSize();
