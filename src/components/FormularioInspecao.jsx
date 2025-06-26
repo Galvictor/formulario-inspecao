@@ -5,6 +5,7 @@ import {
 import {FaCamera, FaSave, FaFilePdf} from 'react-icons/fa';
 import {addDays, isAfter, parseISO, format} from 'date-fns';
 import {saveDataToIndexedDB} from '../data/db';
+import {gerarPdfInspecao} from "../utils/pdf.js";
 
 const FormularioInspecao = () => {
     const [form, setForm] = useState({
@@ -157,7 +158,8 @@ const FormularioInspecao = () => {
                                         <Button color="primary" size="lg" type="submit" className="me-md-2">
                                             <FaSave className="me-2"/> Salvar
                                         </Button>
-                                        <Button color="danger" size="lg" type="button">
+                                        <Button color="danger" size="lg" type="button"
+                                                onClick={() => gerarPdfInspecao(form, previewFoto)}>
                                             <FaFilePdf className="me-2"/> Gerar PDF
                                         </Button>
                                     </Col>
