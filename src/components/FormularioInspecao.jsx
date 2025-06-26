@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {
-    Button, Form, FormGroup, Label, Input, FormText, Col, Row, Alert
+    Button, Form, FormGroup, Label, Input, FormText, Col, Row, Alert, Card, CardBody, Container
 } from 'reactstrap';
 import {FaCamera, FaSave, FaFilePdf} from 'react-icons/fa';
 import {addDays, isAfter, parseISO, format} from 'date-fns';
@@ -59,91 +59,117 @@ const FormularioInspecao = () => {
 
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <h3>Inspeção de Vasos de Pressão</h3>
+        <Container>
+            <Row className="justify-content-center">
+                <Col md={8}>
+                    <Card className="shadow">
+                        <CardBody>
+                            <Form onSubmit={handleSubmit}>
+                                <h3 className="text-center mb-4">Inspeção de Vasos de Pressão</h3>
 
-            {sucesso && <Alert color="success">Dados salvos com sucesso!</Alert>}
+                                {sucesso && (
+                                    <Alert color="success" className="text-center">
+                                        Dados salvos com sucesso!
+                                    </Alert>
+                                )}
 
-            <FormGroup>
-                <Label for="tag">TAG do Equipamento</Label>
-                <Input type="text" name="tag" id="tag" required value={form.tag} onChange={handleChange}/>
-            </FormGroup>
+                                <FormGroup className="mb-3">
+                                    <Label for="tag" className="fw-bold">TAG do Equipamento</Label>
+                                    <Input type="text" name="tag" id="tag" required value={form.tag}
+                                           onChange={handleChange} className="form-control-lg"/>
+                                </FormGroup>
 
-            <FormGroup>
-                <Label for="ultima">Data da Última Inspeção</Label>
-                <Input
-                    type="date"
-                    name="ultima"
-                    id="ultima"
-                    required
-                    value={form.ultima}
-                    onChange={handleChange}
-                />
-                {form.ultima && (
-                    <>
-                        <div>
-                            📅 <strong>Hoje:</strong> {format(new Date(), 'dd/MM/yyyy')}
-                        </div>
-                        <div>
-                            📌 <strong>Próxima inspeção
-                            esperada:</strong> {format(addDays(parseISO(form.ultima), 365), 'dd/MM/yyyy')}
-                        </div>
-                        <div className={`small ${isVencido() ? 'text-danger' : 'text-success'}`}>
-                            {isVencido() ? '❌ Inspeção vencida!' : '✅ Inspeção em dia.'}
-                        </div>
-                    </>
-                )}
-            </FormGroup>
+                                <FormGroup className="mb-3">
+                                    <Label for="ultima" className="fw-bold">Data da Última Inspeção</Label>
+                                    <Input
+                                        type="date"
+                                        name="ultima"
+                                        id="ultima"
+                                        required
+                                        value={form.ultima}
+                                        onChange={handleChange}
+                                        className="form-control-lg"
+                                    />
+                                    {form.ultima && (
+                                        <div className="mt-2 p-3 bg-light rounded">
+                                            <div className="mb-1">
+                                                📅 <strong>Hoje:</strong> {format(new Date(), 'dd/MM/yyyy')}
+                                            </div>
+                                            <div className="mb-1">
+                                                📌 <strong>Próxima inspeção
+                                                esperada:</strong> {format(addDays(parseISO(form.ultima), 365), 'dd/MM/yyyy')}
+                                            </div>
+                                            <div
+                                                className={`small ${isVencido() ? 'text-danger' : 'text-success'} fw-bold`}>
+                                                {isVencido() ? '❌ Inspeção vencida!' : '✅ Inspeção em dia.'}
+                                            </div>
+                                        </div>
+                                    )}
+                                </FormGroup>
 
-            <FormGroup>
-                <Label for="data">Data da inspeção</Label>
-                <Input
-                    type="date"
-                    name="data"
-                    id="data"
-                    required
-                    value={form.data}
-                    onChange={handleChange}
-                />
-            </FormGroup>
+                                <FormGroup className="mb-3">
+                                    <Label for="data" className="fw-bold">Data da inspeção</Label>
+                                    <Input
+                                        type="date"
+                                        name="data"
+                                        id="data"
+                                        required
+                                        value={form.data}
+                                        onChange={handleChange}
+                                        className="form-control-lg"
+                                    />
+                                </FormGroup>
 
-            <FormGroup>
-                <Label for="tipoDano">Tipo de Dano</Label>
-                <Input type="select" name="tipoDano" id="tipoDano" required value={form.tipoDano}
-                       onChange={handleChange}>
-                    <option value="">Selecione</option>
-                    <option value="localizado">Localizado</option>
-                    <option value="disperso">Disperso</option>
-                    <option value="generalizado">Generalizado</option>
-                </Input>
-            </FormGroup>
+                                <FormGroup className="mb-3">
+                                    <Label for="tipoDano" className="fw-bold">Tipo de Dano</Label>
+                                    <Input type="select" name="tipoDano" id="tipoDano" required
+                                           value={form.tipoDano} onChange={handleChange}
+                                           className="form-control-lg">
+                                        <option value="">Selecione</option>
+                                        <option value="localizado">Localizado</option>
+                                        <option value="disperso">Disperso</option>
+                                        <option value="generalizado">Generalizado</option>
+                                    </Input>
+                                </FormGroup>
 
-            <FormGroup>
-                <Label for="observacoes">Observações</Label>
-                <Input type="textarea" name="observacoes" id="observacoes" value={form.observacoes}
-                       onChange={handleChange}/>
-            </FormGroup>
+                                <FormGroup className="mb-3">
+                                    <Label for="observacoes" className="fw-bold">Observações</Label>
+                                    <Input type="textarea" name="observacoes" id="observacoes"
+                                           value={form.observacoes} onChange={handleChange}
+                                           className="form-control-lg" rows="4"/>
+                                </FormGroup>
 
-            <FormGroup>
-                <Label for="foto"><FaCamera/> Foto</Label>
-                <Input type="file" name="foto" id="foto" accept="image/*" onChange={handleChange}/>
-                {previewFoto && (
-                    <img src={previewFoto} alt="Preview" style={{maxWidth: '200px', marginTop: '10px'}}/>
-                )}
-            </FormGroup>
+                                <FormGroup className="mb-4">
+                                    <Label for="foto" className="fw-bold"><FaCamera/> Foto</Label>
+                                    <Input type="file" name="foto" id="foto" accept="image/*"
+                                           onChange={handleChange} className="form-control-lg"/>
+                                    {previewFoto && (
+                                        <div className="text-center mt-3">
+                                            <img src={previewFoto} alt="Preview"
+                                                 className="img-thumbnail"
+                                                 style={{maxWidth: '300px'}}/>
+                                        </div>
+                                    )}
+                                </FormGroup>
 
-            <Row className="mt-4">
-                <Col>
-                    <Button color="primary" type="submit"><FaSave/> Salvar</Button>
-                </Col>
-                <Col>
-                    <Button color="danger" type="button">
-                        <FaFilePdf/> Gerar PDF
-                    </Button>
+                                <Row className="mt-4">
+                                    <Col className="d-grid gap-2 d-md-flex justify-content-md-center">
+                                        <Button color="primary" size="lg" type="submit" className="me-md-2">
+                                            <FaSave className="me-2"/> Salvar
+                                        </Button>
+                                        <Button color="danger" size="lg" type="button">
+                                            <FaFilePdf className="me-2"/> Gerar PDF
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </CardBody>
+                    </Card>
                 </Col>
             </Row>
-        </Form>
+        </Container>
     );
+
 };
 
 export default FormularioInspecao;
