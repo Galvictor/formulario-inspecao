@@ -1,12 +1,17 @@
 import FormularioInspecao from './components/FormularioInspecao';
+import Header from './components/Header';
+import './App.css';
 
 function App() {
     return (
-        <div className="min-vh-100 d-flex align-items-center">
-            <div className="container">
-                <FormularioInspecao/>
+        <>
+            <Header/>
+            <div className="main-content">
+                <div className="container">
+                    <FormularioInspecao/>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 
