@@ -3,6 +3,7 @@ import {
     Button, Form, FormGroup, Label, Input, FormText, Col, Row, Alert
 } from 'reactstrap';
 import {FaCamera, FaSave, FaFilePdf} from 'react-icons/fa';
+import {differenceInDays} from 'date-fns';
 
 const FormularioInspecao = () => {
     const [form, setForm] = useState({
@@ -12,12 +13,17 @@ const FormularioInspecao = () => {
         observacoes: '',
         foto: null
     });
+    const [previewFoto, setPreviewFoto] = useState(null);
+    const [sucesso, setSucesso] = useState(false);
 
     const handleChange = (e) => {
         const {name, value, files} = e.target;
         if (name === 'foto') {
             const file = files[0];
             setForm({...form, foto: file});
+            const reader = new FileReader();
+            reader.onloadend = () => setPreviewFoto(reader.result);
+            reader.readAsDataURL(file);
         } else {
             setForm({...form, [name]: value});
         }
@@ -25,15 +31,22 @@ const FormularioInspecao = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(form);
+        setSucesso(true);
+        setTimeout(() => setSucesso(false), 3000);
+        console.log('Dados salvos:', form);
     };
 
     const isVencido = () => {
+        if (!form.data) return false;
+        const dias = differenceInDays(new Date(), new Date(form.data));
+        return dias > 365;
     };
 
     return (
         <Form onSubmit={handleSubmit}>
             <h3>Inspeção de Vasos de Pressão</h3>
+
+            {sucesso && <Alert color="success">Dados salvos com sucesso!</Alert>}
 
             <FormGroup>
                 <Label for="tag">TAG do Equipamento</Label>
@@ -43,6 +56,11 @@ const FormularioInspecao = () => {
             <FormGroup>
                 <Label for="data">Data da Inspeção</Label>
                 <Input type="date" name="data" id="data" required value={form.data} onChange={handleChange}/>
+                {form.data && (
+                    <div className={`small ${isVencido() ? 'text-danger' : 'text-success'}`}>
+                        {isVencido() ? 'Inspeção vencida!' : 'Inspeção em dia.'}
+                    </div>
+                )}
             </FormGroup>
 
             <FormGroup>
@@ -65,6 +83,9 @@ const FormularioInspecao = () => {
             <FormGroup>
                 <Label for="foto"><FaCamera/> Foto</Label>
                 <Input type="file" name="foto" id="foto" accept="image/*" onChange={handleChange}/>
+                {previewFoto && (
+                    <img src={previewFoto} alt="Preview" style={{maxWidth: '200px', marginTop: '10px'}}/>
+                )}
             </FormGroup>
 
             <Row className="mt-4">
