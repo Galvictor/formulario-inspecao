@@ -3,13 +3,12 @@ import {
     Button, Form, FormGroup, Label, Input, FormText, Col, Row, Alert
 } from 'reactstrap';
 import {FaCamera, FaSave, FaFilePdf} from 'react-icons/fa';
-import {differenceInDays} from 'date-fns';
+import {addDays, isAfter, parseISO, format} from 'date-fns';
 
 const FormularioInspecao = () => {
     const [form, setForm] = useState({
         tag: '',
         ultima: '',
-        proxima: '',
         tipoDano: '',
         observacoes: '',
         foto: null
@@ -38,10 +37,12 @@ const FormularioInspecao = () => {
     };
 
     const isVencido = () => {
-        if (!form.ultima || !form.proxima) return false;
-        const dias = differenceInDays(new Date(form.proxima), new Date(form.ultima));
-        return dias > 365;
+        if (!form.ultima) return false;
+        const dataUltima = parseISO(form.ultima);
+        const limite = addDays(dataUltima, 365);
+        return isAfter(new Date(), limite); // hoje > limite ?
     };
+
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -64,22 +65,19 @@ const FormularioInspecao = () => {
                     value={form.ultima}
                     onChange={handleChange}
                 />
-            </FormGroup>
-
-            <FormGroup>
-                <Label for="proxima">Data da Próxima Inspeção</Label>
-                <Input
-                    type="date"
-                    name="proxima"
-                    id="proxima"
-                    required
-                    value={form.proxima}
-                    onChange={handleChange}
-                />
-                {form.proxima && (
-                    <div className={`small ${isVencido() ? 'text-danger' : 'text-success'}`}>
-                        {isVencido() ? 'Inspeção vencida!' : 'Inspeção em dia.'}
-                    </div>
+                {form.ultima && (
+                    <>
+                        <div>
+                            📅 <strong>Hoje:</strong> {format(new Date(), 'dd/MM/yyyy')}
+                        </div>
+                        <div>
+                            📌 <strong>Próxima inspeção
+                            esperada:</strong> {format(addDays(parseISO(form.ultima), 365), 'dd/MM/yyyy')}
+                        </div>
+                        <div className={`small ${isVencido() ? 'text-danger' : 'text-success'}`}>
+                            {isVencido() ? '❌ Inspeção vencida!' : '✅ Inspeção em dia.'}
+                        </div>
+                    </>
                 )}
             </FormGroup>
 
