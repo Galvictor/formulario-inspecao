@@ -34,22 +34,36 @@ const FormularioInspecao = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSucesso(true);
-        await saveDataToIndexedDB(form);
-        // Resetar formulário
-        setForm({
-            tag: '',
-            ultima: '',
-            data: '',
-            tipoDano: '',
-            observacoes: '',
-            foto: null
-        });
-        setPreviewFoto(null);
 
-        // Ocultar alerta após 3 segundos
-        setTimeout(() => setSucesso(false), 3000);
+        try {
+            // Salva os dados
+            await saveDataToIndexedDB(form);
+
+            // Gera o PDF
+            await gerarPdfInspecao(form, previewFoto);
+
+            // Mostra mensagem de sucesso
+            setSucesso(true);
+
+            // Resetar formulário
+            setForm({
+                tag: '',
+                ultima: '',
+                data: '',
+                tipoDano: '',
+                observacoes: '',
+                foto: null
+            });
+            setPreviewFoto(null);
+
+            // Ocultar alerta após 3 segundos
+            setTimeout(() => setSucesso(false), 3000);
+        } catch (error) {
+            console.error('Erro ao salvar dados ou gerar PDF:', error);
+            alert('Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.');
+        }
     };
+
 
     const isVencido = () => {
         if (!form.ultima) return false;
@@ -155,15 +169,12 @@ const FormularioInspecao = () => {
 
                                 <Row className="mt-4">
                                     <Col className="d-grid gap-2 d-md-flex justify-content-md-center">
-                                        <Button color="primary" size="lg" type="submit" className="me-md-2">
-                                            <FaSave className="me-2"/> Salvar
-                                        </Button>
-                                        <Button color="danger" size="lg" type="button"
-                                                onClick={() => gerarPdfInspecao(form, previewFoto)}>
-                                            <FaFilePdf className="me-2"/> Gerar PDF
+                                        <Button color="primary" size="lg" type="submit">
+                                            <FaSave className="me-2"/> Salvar & Gerar PDF
                                         </Button>
                                     </Col>
                                 </Row>
+
                             </Form>
                         </CardBody>
                     </Card>
