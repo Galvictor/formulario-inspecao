@@ -4,6 +4,7 @@ import {
 } from 'reactstrap';
 import {FaCamera, FaSave, FaFilePdf} from 'react-icons/fa';
 import {addDays, isAfter, parseISO, format} from 'date-fns';
+import {saveDataToIndexedDB} from '../data/db';
 
 const FormularioInspecao = () => {
     const [form, setForm] = useState({
@@ -33,7 +34,7 @@ const FormularioInspecao = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSucesso(true);
-
+        await saveDataToIndexedDB(form);
         // Resetar formulário
         setForm({
             tag: '',
