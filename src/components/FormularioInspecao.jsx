@@ -8,7 +8,8 @@ import {differenceInDays} from 'date-fns';
 const FormularioInspecao = () => {
     const [form, setForm] = useState({
         tag: '',
-        data: '',
+        ultima: '',
+        proxima: '',
         tipoDano: '',
         observacoes: '',
         foto: null
@@ -37,9 +38,9 @@ const FormularioInspecao = () => {
     };
 
     const isVencido = () => {
-        if (!form.data) return false;
-        const dias = differenceInDays(new Date(), new Date(form.data));
-        return dias > 365;
+        if (!form.proxima) return false;
+        const diasRestantes = differenceInDays(new Date(form.proxima), new Date());
+        return diasRestantes < 0;
     };
 
     return (
@@ -54,9 +55,28 @@ const FormularioInspecao = () => {
             </FormGroup>
 
             <FormGroup>
-                <Label for="data">Data da Inspeção</Label>
-                <Input type="date" name="data" id="data" required value={form.data} onChange={handleChange}/>
-                {form.data && (
+                <Label for="ultima">Data da Última Inspeção</Label>
+                <Input
+                    type="date"
+                    name="ultima"
+                    id="ultima"
+                    required
+                    value={form.ultima}
+                    onChange={handleChange}
+                />
+            </FormGroup>
+
+            <FormGroup>
+                <Label for="proxima">Data da Próxima Inspeção</Label>
+                <Input
+                    type="date"
+                    name="proxima"
+                    id="proxima"
+                    required
+                    value={form.proxima}
+                    onChange={handleChange}
+                />
+                {form.proxima && (
                     <div className={`small ${isVencido() ? 'text-danger' : 'text-success'}`}>
                         {isVencido() ? 'Inspeção vencida!' : 'Inspeção em dia.'}
                     </div>
