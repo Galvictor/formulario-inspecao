@@ -1,5 +1,6 @@
 import {PDFDocument, rgb, StandardFonts} from 'pdf-lib';
 import {addDays, parseISO, format} from 'date-fns';
+import logoUrl from '../assets/logo.png'; // Importa a logo diretamente
 
 // Utilitário para converter base64 para array de bytes
 const base64ToBytes = (base64) => {
@@ -11,25 +12,30 @@ export async function gerarPdfInspecao(form, fotoBase64 = null) {
     const doc = await PDFDocument.create();
     const page = doc.addPage([595, 842]); // A4 em pontos
 
-    // Carrega e adiciona a marca d'água
-    const logoResponse = await fetch('/src/assets/logo.png');
-    const logoArrayBuffer = await logoResponse.arrayBuffer();
-    const logoImage = await doc.embedPng(logoArrayBuffer);
+    try {
+        // Carrega e adiciona a marca d'água
+        const logoResponse = await fetch(logoUrl);
+        const logoArrayBuffer = await logoResponse.arrayBuffer();
+        const logoImage = await doc.embedPng(logoArrayBuffer);
 
-    // Calcula as dimensões da marca d'água (50% do tamanho da página)
-    const pageDims = page.getSize();
-    const logoWidth = pageDims.width * 0.5;
-    const logoScale = logoWidth / logoImage.width;
-    const logoHeight = logoImage.height * logoScale;
+        // Calcula as dimensões da marca d'água (50% do tamanho da página)
+        const pageDims = page.getSize();
+        const logoWidth = pageDims.width * 0.5;
+        const logoScale = logoWidth / logoImage.width;
+        const logoHeight = logoImage.height * logoScale;
 
-    // Desenha a marca d'água no centro da página com transparência
-    page.drawImage(logoImage, {
-        x: (pageDims.width - logoWidth) / 2,
-        y: (pageDims.height - logoHeight) / 2,
-        width: logoWidth,
-        height: logoHeight,
-        opacity: 0.3 // Define a transparência (0.1 = 10% opaco)
-    });
+        // Desenha a marca d'água no centro da página com transparência
+        page.drawImage(logoImage, {
+            x: (pageDims.width - logoWidth) / 2,
+            y: (pageDims.height - logoHeight) / 2,
+            width: logoWidth,
+            height: logoHeight,
+            opacity: 0.3
+        });
+    } catch (error) {
+        console.error('Erro ao adicionar marca d\'água:', error);
+        // Continua gerando o PDF mesmo se houver erro na marca d'água
+    }
 
     const {width, height} = page.getSize();
     const font = await doc.embedFont(StandardFonts.Helvetica);
@@ -40,7 +46,6 @@ export async function gerarPdfInspecao(form, fotoBase64 = null) {
         y -= size + 10;
     };
 
-    // Resto do código permanece igual...
     drawText('Relatório de Inspeção - Vasos de Pressão', 16, rgb(0.2, 0.2, 0.8));
 
     drawText(`TAG do Equipamento: ${form.tag}`);
@@ -51,7 +56,6 @@ export async function gerarPdfInspecao(form, fotoBase64 = null) {
     drawText(`Observações:`);
     drawText(form.observacoes || '(nenhuma)', 12);
 
-    // Adiciona a imagem se existir
     if (fotoBase64) {
         drawText('Foto incluída abaixo:', 12);
 
