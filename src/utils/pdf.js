@@ -11,6 +11,26 @@ export async function gerarPdfInspecao(form, fotoBase64 = null) {
     const doc = await PDFDocument.create();
     const page = doc.addPage([595, 842]); // A4 em pontos
 
+    // Carrega e adiciona a marca d'água
+    const logoResponse = await fetch('/src/assets/logo.png');
+    const logoArrayBuffer = await logoResponse.arrayBuffer();
+    const logoImage = await doc.embedPng(logoArrayBuffer);
+
+    // Calcula as dimensões da marca d'água (25% do tamanho da página)
+    const pageDims = page.getSize();
+    const logoWidth = pageDims.width * 0.25;
+    const logoScale = logoWidth / logoImage.width;
+    const logoHeight = logoImage.height * logoScale;
+
+    // Desenha a marca d'água no centro da página com transparência
+    page.drawImage(logoImage, {
+        x: (pageDims.width - logoWidth) / 2,
+        y: (pageDims.height - logoHeight) / 2,
+        width: logoWidth,
+        height: logoHeight,
+        opacity: 0.1 // Define a transparência (0.1 = 10% opaco)
+    });
+
     const {width, height} = page.getSize();
     const font = await doc.embedFont(StandardFonts.Helvetica);
 
@@ -20,7 +40,7 @@ export async function gerarPdfInspecao(form, fotoBase64 = null) {
         y -= size + 10;
     };
 
-    // Cabeçalho
+    // Resto do código permanece igual...
     drawText('Relatório de Inspeção - Vasos de Pressão', 16, rgb(0.2, 0.2, 0.8));
 
     drawText(`TAG do Equipamento: ${form.tag}`);
@@ -33,24 +53,22 @@ export async function gerarPdfInspecao(form, fotoBase64 = null) {
 
     // Adiciona a imagem se existir
     if (fotoBase64) {
-        drawText('Foto incluída abaixo:', 12); // usa y atual
+        drawText('Foto incluída abaixo:', 12);
 
         const imageBytes = base64ToBytes(fotoBase64);
-        const image = await doc.embedJpg(imageBytes); // ou embedPng
+        const image = await doc.embedJpg(imageBytes);
         const imgDims = image.scale(0.25);
 
-        // Ajusta a posição da imagem com base em y atual
         const imageY = y - imgDims.height - 10;
 
         page.drawImage(image, {
             x: 50,
-            y: imageY > 50 ? imageY : 50, // nunca vai abaixo do rodapé
+            y: imageY > 50 ? imageY : 50,
             width: imgDims.width,
             height: imgDims.height
         });
     }
 
-    // Download
     const pdfBytes = await doc.save();
     const blob = new Blob([pdfBytes], {type: 'application/pdf'});
     const link = document.createElement('a');
