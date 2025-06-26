@@ -38,9 +38,9 @@ const FormularioInspecao = () => {
     };
 
     const isVencido = () => {
-        if (!form.proxima) return false;
-        const diasRestantes = differenceInDays(new Date(form.proxima), new Date());
-        return diasRestantes < 0;
+        if (!form.ultima || !form.proxima) return false;
+        const dias = differenceInDays(new Date(form.proxima), new Date(form.ultima));
+        return dias > 365;
     };
 
     return (
