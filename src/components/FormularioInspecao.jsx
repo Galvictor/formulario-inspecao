@@ -10,7 +10,8 @@ import {opcoesFormulario} from '../data/opcoes.js';
 
 
 const FormularioInspecao = () => {
-    const [form, setForm] = useState({
+
+    const estadoInicial = {
         plataforma: '',
         modulo: '',
         setor: '',
@@ -25,7 +26,10 @@ const FormularioInspecao = () => {
         tipoDano: '',
         observacoes: '',
         foto: null
-    });
+    };
+
+
+    const [form, setForm] = useState(estadoInicial);
 
     const [previewFoto, setPreviewFoto] = useState(null);
     const [sucesso, setSucesso] = useState(false);
@@ -57,14 +61,7 @@ const FormularioInspecao = () => {
             setSucesso(true);
 
             // Resetar formulário
-            setForm({
-                tag: '',
-                ultima: '',
-                data: '',
-                tipoDano: '',
-                observacoes: '',
-                foto: null
-            });
+            setForm(estadoInicial);
             setPreviewFoto(null);
 
             // Ocultar alerta após 3 segundos
