@@ -72,13 +72,22 @@ export async function gerarPdfInspecao(form, fotoBase64 = null) {
 
     drawText('Relatório de Inspeção - Vasos de Pressão', 16, rgb(0.2, 0.2, 0.8));
 
+    drawText(`Plataforma: ${form.plataforma}`);
+    drawText(`Módulo: ${form.modulo}`);
+    drawText(`Setor: ${form.setor}`);
+    drawText(`Tipo de Equipamento: ${form.tipoEquipamento}`);
     drawText(`TAG do Equipamento: ${form.tag}`);
     drawText(`Data da Inspeção: ${format(parseISO(form.data), 'dd/MM/yyyy')}`);
     drawText(`Última Inspeção: ${format(parseISO(form.ultima), 'dd/MM/yyyy')}`);
     drawText(`Próxima Esperada: ${format(addDays(parseISO(form.ultima), 365), 'dd/MM/yyyy')}`);
     drawText(`Tipo de Dano: ${form.tipoDano}`);
+    drawText(`Defeito: ${form.defeito}`);
+    drawText(`Causa: ${form.causa}`);
+    drawText(`Categoria RTI: ${form.categoriaRTI}`);
+    drawText(`Recomendação: ${form.recomendacao}`);
     drawText(`Observações:`);
     drawText(form.observacoes || '(nenhuma)', 12);
+
 
     if (fotoBase64) {
         try {
@@ -162,12 +171,19 @@ export async function gerarPdfsEmLote(inspecoes) {
 
             const dados = inspecao.form || inspecao;
 
-            drawText('Relatório de Inspeção - Vasos de Pressão', 16, rgb(0.2, 0.2, 0.8));
+            drawText(`Plataforma: ${dados.plataforma}`);
+            drawText(`Módulo: ${dados.modulo}`);
+            drawText(`Setor: ${dados.setor}`);
+            drawText(`Tipo de Equipamento: ${dados.tipoEquipamento}`);
             drawText(`TAG do Equipamento: ${dados.tag}`);
             drawText(`Data da Inspeção: ${format(parseISO(dados.data), 'dd/MM/yyyy')}`);
             drawText(`Última Inspeção: ${format(parseISO(dados.ultima), 'dd/MM/yyyy')}`);
             drawText(`Próxima Esperada: ${format(addDays(parseISO(dados.ultima), 365), 'dd/MM/yyyy')}`);
             drawText(`Tipo de Dano: ${dados.tipoDano}`);
+            drawText(`Defeito: ${dados.defeito}`);
+            drawText(`Causa: ${dados.causa}`);
+            drawText(`Categoria RTI: ${dados.categoriaRTI}`);
+            drawText(`Recomendação: ${dados.recomendacao}`);
             drawText(`Observações:`);
             drawText(dados.observacoes || '(nenhuma)', 12);
 

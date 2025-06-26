@@ -6,16 +6,27 @@ import {FaCamera, FaSave, FaFilePdf} from 'react-icons/fa';
 import {addDays, isAfter, parseISO, format} from 'date-fns';
 import {saveDataToIndexedDB} from '../data/db';
 import {gerarPdfInspecao} from "../utils/pdf.js";
+import {opcoesFormulario} from '../data/opcoes.js';
+
 
 const FormularioInspecao = () => {
     const [form, setForm] = useState({
+        plataforma: '',
+        modulo: '',
+        setor: '',
+        tipoEquipamento: '',
         tag: '',
+        defeito: '',
+        causa: '',
+        categoriaRTI: '',
+        recomendacao: '',
         ultima: '',
         data: '',
         tipoDano: '',
         observacoes: '',
         foto: null
     });
+
     const [previewFoto, setPreviewFoto] = useState(null);
     const [sucesso, setSucesso] = useState(false);
 
@@ -89,6 +100,61 @@ const FormularioInspecao = () => {
                                 )}
 
                                 <FormGroup className="mb-3">
+                                    <Label className="fw-bold">Plataforma</Label>
+                                    <Input type="select" name="plataforma" required value={form.plataforma}
+                                           onChange={handleChange}>
+                                        <option value="">Selecione</option>
+                                        {opcoesFormulario.plataforma.map(p => <option key={p} value={p}>{p}</option>)}
+                                    </Input>
+                                </FormGroup>
+
+                                <FormGroup className="mb-3">
+                                    <Label className="fw-bold">Módulo</Label>
+                                    <Input type="select" name="modulo" required value={form.modulo}
+                                           onChange={handleChange}>
+                                        <option value="">Selecione</option>
+                                        {opcoesFormulario.modulo.map(m => <option key={m} value={m}>{m}</option>)}
+                                    </Input>
+                                </FormGroup>
+
+                                <FormGroup className="mb-3">
+                                    <Label className="fw-bold">Setor</Label>
+                                    <Input type="select" name="setor" required value={form.setor}
+                                           onChange={handleChange}>
+                                        <option value="">Selecione</option>
+                                        {opcoesFormulario.setor.map(s => <option key={s} value={s}>{s}</option>)}
+                                    </Input>
+                                </FormGroup>
+
+                                <FormGroup className="mb-3">
+                                    <Label className="fw-bold">Tipo de Equipamento</Label>
+                                    <Input
+                                        type="select"
+                                        name="tipoEquipamento"
+                                        required
+                                        value={form.tipoEquipamento}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Selecione</option>
+                                        {opcoesFormulario.tipoEquipamento.map(tipo => <option key={tipo}
+                                                                                              value={tipo}>{tipo}</option>)}
+                                    </Input>
+                                </FormGroup>
+
+                                {form.tipoEquipamento && (
+                                    <FormGroup className="mb-3">
+                                        <Label className="fw-bold">TAG</Label>
+                                        <Input type="select" name="tag" required value={form.tag}
+                                               onChange={handleChange}>
+                                            <option value="">Selecione</option>
+                                            {opcoesFormulario.tag[form.tipoEquipamento].map(tag => <option key={tag}
+                                                                                                           value={tag}>{tag}</option>)}
+                                        </Input>
+                                    </FormGroup>
+                                )}
+
+
+                                <FormGroup className="mb-3">
                                     <Label for="tag" className="fw-bold">TAG do Equipamento</Label>
                                     <Input type="text" name="tag" id="tag" required value={form.tag}
                                            onChange={handleChange} className="form-control-lg"/>
@@ -146,6 +212,44 @@ const FormularioInspecao = () => {
                                         <option value="generalizado">Generalizado</option>
                                     </Input>
                                 </FormGroup>
+
+                                <FormGroup className="mb-3">
+                                    <Label className="fw-bold">Defeito</Label>
+                                    <Input type="select" name="defeito" required value={form.defeito}
+                                           onChange={handleChange}>
+                                        <option value="">Selecione</option>
+                                        {opcoesFormulario.defeito.map(d => <option key={d} value={d}>{d}</option>)}
+                                    </Input>
+                                </FormGroup>
+
+                                <FormGroup className="mb-3">
+                                    <Label className="fw-bold">Causa</Label>
+                                    <Input type="select" name="causa" required value={form.causa}
+                                           onChange={handleChange}>
+                                        <option value="">Selecione</option>
+                                        {opcoesFormulario.causa.map(c => <option key={c} value={c}>{c}</option>)}
+                                    </Input>
+                                </FormGroup>
+
+                                <FormGroup className="mb-3">
+                                    <Label className="fw-bold">Categoria RTI</Label>
+                                    <Input type="select" name="categoriaRTI" required value={form.categoriaRTI}
+                                           onChange={handleChange}>
+                                        <option value="">Selecione</option>
+                                        {opcoesFormulario.categoriaRTI.map(cat => <option key={cat}
+                                                                                          value={cat}>{cat}</option>)}
+                                    </Input>
+                                </FormGroup>
+
+                                <FormGroup className="mb-3">
+                                    <Label className="fw-bold">Recomendação</Label>
+                                    <Input type="select" name="recomendacao" required value={form.recomendacao}
+                                           onChange={handleChange}>
+                                        <option value="">Selecione</option>
+                                        {opcoesFormulario.recomendacao.map(r => <option key={r} value={r}>{r}</option>)}
+                                    </Input>
+                                </FormGroup>
+
 
                                 <FormGroup className="mb-3">
                                     <Label for="observacoes" className="fw-bold">Observações</Label>
