@@ -2,7 +2,7 @@ import {openDB} from 'idb';
 
 const DB_NAME = 'inspecoes-db';
 const STORE_NAME = 'inspecoes';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 // Cria ou abre o banco
 const dbPromise = openDB(DB_NAME, DB_VERSION, {
